@@ -10,7 +10,7 @@ def generate_launch_description():
     urdf_file = PathJoinSubstitution([
         FindPackageShare('six_wheel_skid_robot'),
         'urdf',
-        'my_robot.urdf.xacro'
+        'mobile_base.xacro'
     ])
 
     rviz_config_file = PathJoinSubstitution([
