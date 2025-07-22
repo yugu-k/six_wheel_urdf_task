@@ -279,7 +279,22 @@
             <updateRate>10.0 </updateRate>
           </plugin>
         </sensor>
-    </gazebo>
+    </gazebo>   
 
+    <gazebo>
+      <plugin name="diff_drive_controller" filename="libgazebo_ros_diff_drive.so">
+        <update_rate>50</update_rate>
+        <left_joint>joint_wheel_left_0</left_joint>        
+        <right_joint>joint_wheel_right_0</right_joint>
+        <wheel_separation>0.9</wheel_separation>        
+        <wheel_diameter>0.2</wheel_diameter>  
+        <publish_odom>true</publish_odom>
+        <publish_odom_tf>true</publish_odom_tf>
+        <publish_wheel_tf>true</publish_wheel_tf>
+        <odometry_topic>odom</odometry_topic>
+        <odometry_frame>odom</odometry_frame>
+        <robot_base_frame>base_footprint</robot_base_frame>
+      </plugin>
+    </gazebo>
 
  </robot>
