@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://ros.org/wiki/xacro" name="six_wheel_ugv">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ugv">
 
-
-  <xacro:macro name="wheel_link" params="name">
+   <xacro:macro name="wheel_link" params="name">
     <link name="${name}">
       <visual>
         <geometry>
@@ -59,26 +58,47 @@
   <xacro:wheel_link name="wheel_right_2"/>
 
   <link name="lidar_front">
-    <visual>
-      <geometry>
-        <cylinder radius="0.07" length="0.08"/>
-      </geometry>
-      <material name="Blue">
-        <color rgba="0.1 0.3 0.8 1"/>
-      </material>
-    </visual>
-  </link>
+  <visual>
+    <geometry>
+      <cylinder radius="0.07" length="0.08"/>
+    </geometry>
+    <material name="Blue">
+      <color rgba="0.1 0.3 0.8 1"/>
+    </material>
+  </visual>
+  <collision>
+    <geometry>
+      <cylinder radius="0.07" length="0.08"/>
+    </geometry>
+  </collision>
+  <inertial>
+    <mass value="0.1"/>
+    <origin xyz="0 0 0"/>
+    <inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/>
+  </inertial>
+</link>
 
-  <link name="lidar_back">
-    <visual>
-      <geometry>
-        <cylinder radius="0.07" length="0.08"/>
-      </geometry>
-      <material name="Blue">
-        <color rgba="0.1 0.3 0.8 1"/>
-      </material>
-    </visual>
-  </link>
+<link name="lidar_back">
+  <visual>
+    <geometry>
+      <cylinder radius="0.07" length="0.08"/>
+    </geometry>
+    <material name="Blue">
+      <color rgba="0.1 0.3 0.8 1"/>
+    </material>
+  </visual>
+  <collision>
+    <geometry>
+      <cylinder radius="0.07" length="0.08"/>
+    </geometry>
+  </collision>
+  <inertial>
+    <mass value="0.1"/>
+    <origin xyz="0 0 0"/>
+    <inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/>
+  </inertial>
+</link>
+
 
   <link name="camera_front">
     <visual>
@@ -166,109 +186,99 @@
   <joint name="joint_camera_back" type="fixed">
     <parent link="base_link"/>
     <child link="camera_back"/>
-    <origin xyz="-0.75 -0.14 0.44" rpy="0 0 3.14159"/>
+    <origin xyz="-0.75 -0.14 0.44" rpy="0 0 3.14159"/> 
   </joint>
-
-  <!-- Gazebo Plugins -->
-  <gazebo reference="lidar_front">
-    <sensor type="gpu_ray" name="front_lidar_sensor">
-      <update_rate>10</update_rate>
-      <ray>
-        <scan>
-          <horizontal>
-            <samples>640</samples>
-            <resolution>1</resolution>
-            <min_angle>-1.047</min_angle>
-            <max_angle>1.047</max_angle>
-          </horizontal>
-        </scan>
-        <range>
-          <min>0.1</min>
-          <max>30.0</max>
-        </range>
-      </ray>
-      <plugin name="gazebo_ros_gpu_lidar_front" filename="libgazebo_ros_gpu_lidar.so">
-        <topicName>/lidar_front/scan</topicName>
-        <frameName>lidar_front</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
-
-  <gazebo reference="lidar_back">
-    <sensor type="gpu_ray" name="rear_lidar_sensor">
-      <update_rate>10</update_rate>
-      <ray>
-        <scan>
-          <horizontal>
-            <samples>640</samples>
-            <resolution>1</resolution>
-            <min_angle>-1.047</min_angle>
-            <max_angle>1.047</max_angle>
-          </horizontal>
-        </scan>
-        <range>
-          <min>0.1</min>
-          <max>30.0</max>
-        </range>
-      </ray>
-      <plugin name="gazebo_ros_gpu_lidar_rear" filename="libgazebo_ros_gpu_lidar.so">
-        <topicName>/lidar_back/scan</topicName>
-        <frameName>lidar_back</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
-
-    <gazebo reference="camera_front">
+  
+   <gazebo reference="camera_front">
         <material>Gazebo/Red</material>
-        <sensor name="camera_sensor_front" type="camera">
+        <sensor name="camera_sensor" type="camera">
             <pose>0 0 0 0 0 0</pose>
             <visualize>true</visualize>
             <update_rate>10.0</update_rate>
-            <camera>
-                <horizontal_fov>1.3962634</horizontal_fov>
-                <image>
-                <width>640</width>
-                <height>480</height>
-                <format>R8G8B8</format>
-                </image>
-                <clip>
-                <near>0.1</near>
-                <far>100</far>
-                </clip>
-            </camera>
-            <plugin name="camera_front_controller" filename="libgazebo_ros_camera.so">
-                <camera_name>camera_front</camera_name>
+            <plugin name="camera_controller_front" filename="libgazebo_ros_camera.so">
                 <frame_name>camera_front</frame_name>
                 <image_topic_name>image_raw</image_topic_name>
-                <camera_info_topic_name>camera_info</camera_info_topic_name>
             </plugin>
         </sensor>
     </gazebo>
+  
   <gazebo reference="camera_back">
         <material>Gazebo/Red</material>
-        <sensor name="camera_sensor_back" type="camera">
+        <sensor name="camera_sensor" type="camera">
             <pose>0 0 0 0 0 0</pose>
             <visualize>true</visualize>
             <update_rate>10.0</update_rate>
-            <camera>
-                <horizontal_fov>1.3962634</horizontal_fov>
-                <image>
-                <width>640</width>
-                <height>480</height>
-                <format>R8G8B8</format>
-                </image>
-                <clip>
-                <near>0.1</near>
-                <far>100</far>
-                </clip>
-            </camera>
-            <plugin name="camera_back_controller" filename="libgazebo_ros_camera.so">
-                <camera_name>camera_back</camera_name>
+            <plugin name="camera_controller_rear" filename="libgazebo_ros_camera.so">
                 <frame_name>camera_back</frame_name>
                 <image_topic_name>image_raw</image_topic_name>
-                <camera_info_topic_name>camera_info</camera_info_topic_name>
             </plugin>
+        </sensor>
+  </gazebo>
+
+    <gazebo reference="lidar_front">
+        <sensor name="front_lidar_sensor" type="gpu_ray">
+          <pose>0 0 0 0 0 0</pose>
+          <visualize>true</visualize>
+          <update_rate>10.0</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>720</samples>
+                <resolution>1</resolution>
+                <min_angle>-1.047</min_angle> 
+                <max_angle>1.047</max_angle>  
+              </horizontal>
+            </scan>
+            <range>
+              <min>0.1</min>
+              <max>10.0</max>
+              <resolution>0.01</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </ray>
+          <plugin name="front_lidar_plugin" filename="libgazebo_ros_gpu_laser.so">
+            <topicName>/lidar_front/scan</topicName>
+            <frameName>lidar_front</frameName>
+            <updateRate>10.0 </updateRate>
+          </plugin>
+        </sensor>
+    </gazebo>
+    <gazebo reference="lidar_back">
+        <sensor name="rear_lidar_sensor" type="gpu_ray">
+          <pose>0 0 0 0 0 0</pose>
+          <visualize>true</visualize>
+          <update_rate>10.0</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>720</samples>
+                <resolution>1</resolution>
+                <min_angle>-1.047</min_angle> 
+                <max_angle>1.047</max_angle>  
+              </horizontal>
+            </scan>
+            <range>
+              <min>0.1</min>
+              <max>10.0</max>
+              <resolution>0.01</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </ray>
+          <plugin name="rear_lidar_plugin" filename="libgazebo_ros_gpu_laser.so">
+            <topicName>/lidar_back/scan</topicName>
+            <frameName>lidar_back</frameName>
+            <updateRate>10.0 </updateRate>
+          </plugin>
         </sensor>
     </gazebo>
 
-</robot>
+
+ </robot>
